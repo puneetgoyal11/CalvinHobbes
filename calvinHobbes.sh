@@ -16,11 +16,31 @@ downloadMonth()
 	do
 		if [ $day -lt 10 ]; 
 		then
-			wget --append-output=/tmp/calvinHobbesLogs.txt http://marcel-oehler.marcellosendos.ch/comics/ch/$year/$monthFormatted/$year$monthFormatted$zero$day.gif >> /tmp/calvinHobbesLogs.txt
+			wget --append-output=/tmp/calvinHobbesLogs.txt http://marcel-oehler.marcellosendos.ch/comics/ch/$year/$monthFormatted/$year$monthFormatted$zero$day.gif 
 		else
-			wget --append-output=/tmp/calvinHobbesLogs.txt http://marcel-oehler.marcellosendos.ch/comics/ch/$year/$monthFormatted/$year$monthFormatted$day.gif
+			wget --append-output=/tmp/calvinHobbesLogs.txt http://marcel-oehler.marcellosendos.ch/comics/ch/$year/$monthFormatted/$year$monthFormatted$day.gif 
 		fi
 	done
+}
+
+downloadYearRange(){
+	yearStart=$1
+	yearEnd=$2
+        monthStart=$3
+	monthEnd=$4
+	for year in {$yearStart..$yearEnd}
+	do
+        	mkdir $year
+        	cd $year
+        	for month in {$monthStart..$monthEnd}
+        	do
+        		mkdir $month
+        		cd $month
+        		downloadMonth $year $month
+        		cd ..
+        	done
+        	cd ..
+	done	
 }
 
 main()
@@ -28,36 +48,8 @@ main()
 touch /tmp/calvinHobbesLogs.txt
 mkdir calvin-hobbes
 cd calvin-hobbes
-for year in {1985..1985}
-do
-	mkdir $year
-	cd $year
-        for month in {11..12}
-        do
-	mkdir $month
-	cd $month
-        downloadMonth $year $month
-        cd ..
-	done
-	cd ..
-done
-
-for year in {1986..1995}
-do
-	mkdir $year
-        cd $year
-	for month in {1..12}
-	do
-	mkdir $month
-        cd $month
-	downloadMonth $year $month
-	cd ..
-	done
-	cd ..
-done
-cd ..
-
-	
+downloadYearRange 1985 1985 11 12
+downloadYearRange 1986 1995 1 12
 }
 
 #Entry point
